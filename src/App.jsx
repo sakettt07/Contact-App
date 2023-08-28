@@ -2,12 +2,24 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import { FiSearch } from "react-icons/fi";
 import { AiFillPlusCircle } from "react-icons/ai";
-import { collection ,getDocs } from "firebase/firestore";
-import {db} from "./config/firebase";
-import { HiOutlineUserCircle } from "react-icons/hi";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./config/firebase";
+import Contactcard from "./components/Contactcard";
+import AddUpdate from "./components/AddUpdate";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
+
+  const [open,setOpen]=useState(false);
+
+  const onOpen=()=>{
+    setOpen(true);
+
+  }
+  const onClose=()=>{
+    setOpen(false);
+
+  }
 
   useEffect(() => {
     const getContacts = async () => {
@@ -29,9 +41,10 @@ const App = () => {
   }, []);
 
   return (
+    <>
     <div className="mx-auto max-w-[370px] px-4">
       <Navbar />
-      <div className="flex">
+      <div className="flex gap-2">
         <div className="relative flex flex-grow items-center">
           <FiSearch className=" ml-1 absolute text-2xl text-white" />
           <input
@@ -40,21 +53,17 @@ const App = () => {
           />
         </div>
         <div>
-          <AiFillPlusCircle className=" ml-1 absolute  text-white text-4xl cursor-pointer" />
+          <AiFillPlusCircle onClick={onOpen} className=" ml-1 absolute  text-white text-4xl cursor-pointer" />
         </div>
       </div>
-      <div>
+      <div className="mt-4 flex flex-col gap-3 ">
         {contacts.map((contact) => (
-          <div key={contact.id}>
-            <HiOutlineUserCircle />
-            <div className="text-white">
-              <h2 className="">{contact.name}</h2>
-              <p className="">{contact.email}</p>
-            </div>
-          </div>
+          <Contactcard  key={contact.id} contact={contact}/>
         ))}
       </div>
     </div>
+    <AddUpdate onClose={onClose} isOpen={open} />
+    </>
   );
 };
 
